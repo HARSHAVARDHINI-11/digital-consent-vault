@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Digital Consent Vault - User Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h2 { color: #333; }
+        section { margin-bottom: 30px; }
+        input, button { padding: 5px; margin: 5px; }
+        .output { margin-top: 10px; border: 1px solid #ccc; padding: 10px; }
+    </style>
+</head>
+<body>
+
+    <h1>Digital Consent Vault - User CRUD</h1>
+
+    <!-- Create User -->
+    <section>
+        <h2>Create User</h2>
+        <input type="text" id="createUsername" placeholder="Username">
+        <input type="email" id="createEmail" placeholder="Email">
+        <button onclick="createUser()">Create</button>
+        <div class="output" id="createResult"></div>
+    </section>
+
+    <!-- Get All Users -->
+    <section>
+        <h2>Get All Users</h2>
+        <button onclick="getAllUsers()">Fetch All</button>
+        <div class="output" id="allUsersResult"></div>
+    </section>
+
+    <!-- Update User -->
+    <section>
+        <h2>Update User</h2>
+        <input type="number" id="updateId" placeholder="User ID">
+        <input type="text" id="updateUsername" placeholder="New Username">
+        <input type="email" id="updateEmail" placeholder="New Email">
+        <button onclick="updateUser()">Update</button>
+        <div class="output" id="updateResult"></div>
+    </section>
+
+    <!-- Delete User -->
+    <section>
+        <h2>Delete User</h2>
+        <input type="number" id="deleteId" placeholder="User ID">
+        <button onclick="deleteUser()">Delete</button>
+        <div class="output" id="deleteResult"></div>
+    </section>
+
+    <script>
+        const baseUrl = 'http://localhost:8080/api/users';
+
+        function createUser() {
+            const username = document.getElementById('createUsername').value;
+            const email = document.getElementById('createEmail').value;
+            fetch(baseUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email })
+            })
+            .then(res => res.json())
+            .then(data => document.getElementById('createResult').innerText = JSON.stringify(data, null, 2));
+        }
+
+        function getAllUsers() {
+            fetch(baseUrl)
+                .then(res => res.json())
+                .then(data => document.getElementById('allUsersResult').innerText = JSON.stringify(data, null, 2));
+        }
+
+        function updateUser() {
+            const id = document.getElementById('updateId').value;
+            const username = document.getElementById('updateUsername').value;
+            const email = document.getElementById('updateEmail').value;
+            fetch(`${baseUrl}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, email })
+            })
+            .then(res => res.json())
+            .then(data => document.getElementById('updateResult').innerText = JSON.stringify(data, null, 2));
+        }
+
+        function deleteUser() {
+            const id = document.getElementById('deleteId').value;
+            fetch(`${baseUrl}/${id}`, {
+                method: 'DELETE'
+            })
+            .then(() => document.getElementById('deleteResult').innerText = `User ${id} deleted.`);
+        }
+    </script>
+
+</body>
+</html>
